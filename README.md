@@ -3,7 +3,9 @@ Coursera - Getting and Cleaning Data Course Project
 
 ## This project uses one script called “run_analysis.R”. 
 This repository also contains the following files:
+
 CodeBook.md: Description of the data
+
 ERD.png: Relationship between data files
 
 ## Pre-Conditions:
