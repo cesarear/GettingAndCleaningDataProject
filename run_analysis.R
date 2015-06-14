@@ -1,17 +1,34 @@
+#variable that specifies the path to the data
+#Change this path if necessary
+pathToDataFiles = './UCI HAR Dataset'
+
+#**************************
+#DO NOT CHANGE from HERE!!
+#**************************
+featuresFile       = paste(pathToDataFiles,'features.txt',sep="/")
+activityLabelsFile = paste(pathToDataFiles,"activity_labels.txt",sep="/")
+y_trainFile        = paste(pathToDataFiles,"train/y_train.txt",sep="/")
+subject_trainFile  = paste(pathToDataFiles,"train/subject_train.txt",sep="/")
+X_trainFile        = paste(pathToDataFiles,"train/x_train.txt",sep="/")
+
+y_testFile        = paste(pathToDataFiles,"test/y_test.txt",sep="/")
+subject_testFile  = paste(pathToDataFiles,"test/subject_test.txt",sep="/")
+X_testFile        = paste(pathToDataFiles,"test/X_test.txt",sep="/")
+
 #*****************
 #Get Master Data
 #*****************
-features      = as.character((read.table('./features.txt',header=FALSE))[,2]); #load features with column names (variables)
-activities = read.table('./activity_labels.txt',header=FALSE); #load activities
+features      = as.character((read.table(featuresFile,header=FALSE))[,2]); #load features with column names (variables)
+activities = read.table(activityLabelsFile,header=FALSE); #load activities
 colnames(activities) = c('activityID','activityName'); #Set column names for activites
 
 #******************************************
 #TRAIN DATA
 #*****************************************
 #Create consolidated train data set
-trainDF = cbind(read.table('./train/y_train.txt',header=FALSE), #load train activities
-                read.table('./train/subject_train.txt',header=FALSE),  #load subjects
-                read.table('./train/X_train.txt',header=FALSE)) #load train data (observations)
+trainDF = cbind(read.table(y_trainFile,header=FALSE), #load train activities
+                read.table(subject_trainFile,header=FALSE),  #load subjects
+                read.table(X_trainFile,header=FALSE)) #load train data (observations)
 
 #*********************************************************************
 #4. Appropriately labels the data set with descriptive variable names. 
@@ -24,9 +41,9 @@ colnames(trainDF)[3:ncol(trainDF)] <- features #as.character(features[,2])
 #TEST DATA
 #*****************************************
 #Create consolidated test data set
-testDF = cbind(read.table('./test/y_test.txt',header=FALSE), #load test activities
-                read.table('./test/subject_test.txt',header=FALSE),  #load test subjects
-                read.table('./test/X_test.txt',header=FALSE)) #load test data (observations)
+testDF = cbind(read.table(y_testFile ,header=FALSE), #load test activities
+               read.table(subject_testFile,header=FALSE),  #load test subjects
+               read.table(X_testFile ,header=FALSE)) #load test data (observations)
 
 #*********************************************************************
 #4. Appropriately labels the data set with descriptive variable names. 
@@ -51,4 +68,5 @@ consolidatedDF <- (merge(activities,consolidatedDF,by="activityID",y.ALL = TRUE)
 #5. creates a second, independent tidy data set with the average of each variable for each activity and each subject.
 tidyData <- suppressWarnings(aggregate(consolidatedDF,by=list(activityName=consolidatedDF$activityName, subjectID=consolidatedDF$subjectID), FUN=mean)[,-c(3,4)])
 
+#data set as a txt file created with write.table() using row.name=FALSE
 write.table(tidyData, "./tidydata.txt", row.name=FALSE)
